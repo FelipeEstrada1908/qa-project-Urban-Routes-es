@@ -28,21 +28,21 @@ class TestUrbanRoutes:
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.select_comfort_tariff()
         # Valida que el contenedor de la tarifa Comfort tenga la clase activa o esté visible
-        assert self.driver.find_element(*UrbanRoutesPage.comfort_tariff).is_displayed()
+        assert routes_page.get_active_tariff() == 'Comfort'
 
     # 3. Rellenar el número de teléfono
     def test_3_fill_phone_number(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.fill_phone_number(data.phone_number)
         # Valida que el botón del teléfono guarde el estado del número ingresado
-        assert self.driver.find_element(*UrbanRoutesPage.phone_button).is_displayed()
+        assert routes_page.get_phone_number() == data.phone_number
 
     # 4. Agregar tarjeta de crédito
     def test_4_add_credit_card(self):
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.add_credit_card(data.card_number, data.card_code)
         # Valida que el texto del método de pago se actualice
-        assert self.driver.find_element(*UrbanRoutesPage.payment_method_button).is_displayed()
+        assert routes_page.get_payment_method() == 'Tarjeta'
 
     # 5. Escribir el mensaje para el conductor
     def test_5_write_driver_comment(self):

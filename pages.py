@@ -10,6 +10,9 @@ class UrbanRoutesPage:
     to_field = (By.ID, 'to')
     call_taxi_button = (By.XPATH, "//button[contains(text(), 'Pedir un taxi')]")
     comfort_tariff = (By.XPATH, "//div[contains(text(), 'Comfort')]")
+    active_tariff_title = (By.XPATH, "//div[contains(@class, 'tcard active')]//div[@class='tcard-title']")
+    phone_number_display = (By.CLASS_NAME, "np-text")
+    payment_method_text = (By.CLASS_NAME, "pp-value-text")
 
     # Teléfono
     phone_button = (By.CLASS_NAME, "np-button")
@@ -29,7 +32,7 @@ class UrbanRoutesPage:
     # Requisitos Adicionales (comment_input cambiado a By.CSS_SELECTOR)
     comment_input = (By.CSS_SELECTOR, "input#comment")
     blanket_and_tissues_switch = (By.XPATH, "//*[contains(text(), 'Manta y pañuelos')]/..//span[@class='slider round'] | //*[contains(text(), 'Manta y pañuelos')]/following-sibling::div//span[contains(@class, 'slider')]")
-    blanket_and_tissues_checkbox = (By.XPATH, "//*[contains(text(), 'Manta y pañuelos')]/..//input[@class='custom-cb']")
+    blanket_and_tissues_checkbox = (By.XPATH, "//div[contains(text(), 'Manta y pañuelos')]/parent::div//input[@type='checkbox']")
     ice_cream_plus_button = (By.XPATH, "//div[contains(text(), 'Helado')]/..//div[@class='counter-plus']")
     ice_cream_counter = (By.XPATH, "//div[contains(text(), 'Helado')]/..//div[@class='counter-value']")
 
@@ -54,6 +57,15 @@ class UrbanRoutesPage:
 
     def get_to(self):
         return self.driver.find_element(*self.to_field).get_property('value')
+
+    def get_active_tariff(self):
+        return self.wait.until(EC.visibility_of_element_located(self.active_tariff_title)).text
+
+    def get_phone_number(self):
+        return self.driver.find_element(*self.phone_number_display).text
+
+    def get_payment_method(self):
+        return self.driver.find_element(*self.payment_method_text).text
 
     # --- Métodos de Flujo ---
     def set_route(self, from_address, to_address):
@@ -103,7 +115,8 @@ class UrbanRoutesPage:
         self.wait.until(EC.element_to_be_clickable(self.blanket_and_tissues_switch)).click()
 
     def is_blanket_selected(self):
-        return self.driver.find_element(*self.blanket_and_tissues_switch).is_displayed()
+        checkbox = self.driver.find_element(*self.blanket_and_tissues_checkbox)
+        return checkbox.is_selected()
 
     def order_two_ice_creams(self):
         plus_btn = self.wait.until(EC.element_to_be_clickable(self.ice_cream_plus_button))
